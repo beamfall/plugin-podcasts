@@ -93,3 +93,10 @@ with `no such column: fi.item_identifier` (or similar), wrapped as
 `ErrAntennaPodQueryFailed`. No partial state is returned and no write is
 attempted — `openReadOnlySQLite` opens every fixture, including this one,
 with `mode=ro&immutable=1`.
+
+## Licensing sign-off
+
+On 2026-10-19 the Beamfall operator reviewed the GPL-3.0-only AntennaPod-derived
+fixtures (`legacy-2.0.1.sql` and `current-3.11.4.sql`) and the notice in
+`THIRD_PARTY_NOTICES.md`, and accepted their inclusion in this AGPL-3.0-only
+repository under GPLv3/AGPLv3 section 13.
