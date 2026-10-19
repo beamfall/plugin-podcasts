@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opml [
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<opml version="2.0">
+  <head><title>&xxe;</title></head>
+  <body>
+    <outline text="&xxe;" xmlUrl="https://feeds.example.test/x.xml"></outline>
+  </body>
+</opml>

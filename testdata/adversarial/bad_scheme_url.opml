@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head><title>Bad scheme</title></head>
+  <body>
+    <outline text="Local file" xmlUrl="file:///etc/passwd"></outline>
+    <outline text="JS" xmlUrl="javascript:alert(1)"></outline>
+  </body>
+</opml>

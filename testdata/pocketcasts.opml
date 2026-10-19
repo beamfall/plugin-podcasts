@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>Pocket Casts subscriptions</title>
+  </head>
+  <body>
+    <outline text="Tech" title="Tech">
+      <outline text="Signal Path" title="Signal Path" xmlUrl="https://feeds.example.test/signal.xml"/>
+    </outline>
+  </body>
+</opml>
