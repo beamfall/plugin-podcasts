@@ -23,7 +23,8 @@ SDK_CHECKOUT = """      - name: Checkout SDK override
         with:
           repository: beamfall/plugin-sdk
           ref: ${{ inputs.sdk_ref }}
-          path: beamfall-plugin-sdk"""
+          path: beamfall-plugin-sdk
+          persist-credentials: false"""
 SDK_USE = """      - name: Use SDK override
         if: ${{ inputs.sdk_ref != '' }}
         working-directory: beamfall-plugin-podcasts
@@ -36,6 +37,7 @@ SDK_STEPS = {
             "repository": "beamfall/plugin-sdk",
             "ref": "${{ inputs.sdk_ref }}",
             "path": "beamfall-plugin-sdk",
+            "persist-credentials": "false",
         },
     },
     "Use SDK override": {
