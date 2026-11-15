@@ -31,8 +31,8 @@ func Bundle() sdk.Bundle {
 	return sdk.Bundle{
 		ID:           "podcasts",
 		Version:      "0.1.4",
-		SDKFloor:     "0.3.4",
-		SDKCeiling:   "0.3.4",
+		SDKFloor:     "0.3.5",
+		SDKCeiling:   "0.3.5",
 		DisplayName:  sdk.LocaleString{"en": "Podcasts", "fr": "Balados"},
 		MediaLabel:   sdk.LocaleString{"en": "Episode", "fr": "Épisode"},
 		MediaClasses: []string{"audio"},
