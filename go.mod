@@ -3,7 +3,7 @@ module github.com/beamfall/plugin-podcasts
 go 1.27.3
 
 require (
-	github.com/beamfall/plugin-sdk v0.4.3
+	github.com/beamfall/plugin-sdk v0.4.4
 	modernc.org/sqlite v1.53.0
 )
 
