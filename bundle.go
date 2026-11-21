@@ -31,8 +31,8 @@ func Bundle() sdk.Bundle {
 	return sdk.Bundle{
 		ID:           "podcasts",
 		Version:      "0.1.4",
-		SDKFloor:     "0.4.6",
-		SDKCeiling:   "0.4.6",
+		SDKFloor:     "0.4.7",
+		SDKCeiling:   "0.4.7",
 		DisplayName:  sdk.LocaleString{"en": "Podcasts", "fr": "Balados"},
 		MediaLabel:   sdk.LocaleString{"en": "Episode", "fr": "Épisode"},
 		MediaClasses: []string{"audio"},
@@ -60,10 +60,11 @@ func Bundle() sdk.Bundle {
 				// publication order — OrderedChildren carries the
 				// play-next semantics (oldest-first for serial shows
 				// is a Source concern, not structure).
-				Name:            "show",
-				DisplayName:     sdk.LocaleString{"en": "Show", "fr": "Émission"},
-				Archetype:       "container",
-				OrderedChildren: true,
+				Name:              "show",
+				DisplayName:       sdk.LocaleString{"en": "Show", "fr": "Émission"},
+				PluralDisplayName: sdk.LocaleString{"en": "Shows", "fr": "Émissions"},
+				Archetype:         "container",
+				OrderedChildren:   true,
 				Fields: []sdk.FieldSpec{
 					{Name: "feed-url", Type: "url",
 						Label: sdk.LocaleString{"en": "Feed URL", "fr": "URL du flux"}},
@@ -92,9 +93,10 @@ func Bundle() sdk.Bundle {
 			{
 				// Hosts and guests share one kind; the relation
 				// (hosted-by vs guested-by) is what distinguishes them.
-				Name:        "person",
-				DisplayName: sdk.LocaleString{"en": "Person", "fr": "Personne"},
-				Archetype:   "person",
+				Name:              "person",
+				DisplayName:       sdk.LocaleString{"en": "Person", "fr": "Personne"},
+				PluralDisplayName: sdk.LocaleString{"en": "People", "fr": "Personnes"},
+				Archetype:         "person",
 				Fields: []sdk.FieldSpec{
 					{Name: "bio", Type: "text",
 						Label: sdk.LocaleString{"en": "Biography", "fr": "Biographie"}},
@@ -104,9 +106,10 @@ func Bundle() sdk.Bundle {
 			},
 			{
 				// Flat topic taxonomy (Apple genre vocabulary seeds it).
-				Name:        "topic",
-				DisplayName: sdk.LocaleString{"en": "Topic", "fr": "Sujet"},
-				Archetype:   "category",
+				Name:              "topic",
+				DisplayName:       sdk.LocaleString{"en": "Topic", "fr": "Sujet"},
+				PluralDisplayName: sdk.LocaleString{"en": "Topics", "fr": "Sujets"},
+				Archetype:         "category",
 			},
 		},
 		// Section titles use the full locale-map form: en + fr at launch
