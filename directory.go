@@ -51,14 +51,14 @@ func (c *iTunesClient) Search(ctx context.Context, query string) ([]Feed, error)
 // Apple Podcasts show ID to its directory entry.
 const iTunesLookupPath = "https://itunes.apple.com/lookup?"
 
-// ResolveShowLink resolves an Apple Podcasts show page
+// ResolveDirectoryLink resolves an Apple Podcasts show page
 // (https://podcasts.apple.com/<country>/podcast/<slug>/id<digits>) to its feed
 // through the keyless iTunes lookup. matched reports whether link is an Apple
 // Podcasts page at all. A page without a numeric show ID matches with no feeds
 // and makes no request, so the caller does not go on to scrape Apple's HTML for
 // feed links. The lookup runs through doer, so it shares the caller's SSRF gate,
 // request budget and response cap.
-func ResolveShowLink(ctx context.Context, doer Doer, link *url.URL) (feeds []Feed, matched bool, err error) {
+func ResolveDirectoryLink(ctx context.Context, doer Doer, link *url.URL) (feeds []Feed, matched bool, err error) {
 	if !strings.EqualFold(link.Hostname(), "podcasts.apple.com") {
 		return nil, false, nil
 	}

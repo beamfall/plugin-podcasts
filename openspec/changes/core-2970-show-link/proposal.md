@@ -7,7 +7,7 @@ podcast vocabulary, so recognising the Apple hostname and show ID belongs in thi
 
 ## What Changes
 
-- Add `ResolveShowLink`, which turns an Apple Podcasts show URL into a keyless iTunes lookup through
+- Add `ResolveDirectoryLink`, which turns an Apple Podcasts show URL into a keyless iTunes lookup through
   the caller's `Doer`, so the request shares Core's SSRF gate, request budget and response cap.
 - A non-Apple link is unmatched; an Apple page without a numeric show ID matches with no request.
 
