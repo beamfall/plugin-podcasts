@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"path"
 	"strings"
 )
 
@@ -44,6 +45,42 @@ func (c *iTunesClient) Search(ctx context.Context, query string) ([]Feed, error)
 		return nil, fmt.Errorf("itunes: search request failed: %w", err)
 	}
 	return parseITunesResults(data)
+}
+
+// iTunesLookupPath is the keyless iTunes lookup endpoint, which resolves an
+// Apple Podcasts show ID to its directory entry.
+const iTunesLookupPath = "https://itunes.apple.com/lookup?"
+
+// ResolveShowLink resolves an Apple Podcasts show page
+// (https://podcasts.apple.com/<country>/podcast/<slug>/id<digits>) to its feed
+// through the keyless iTunes lookup. matched reports whether link is an Apple
+// Podcasts page at all. A page without a numeric show ID matches with no feeds
+// and makes no request, so the caller does not go on to scrape Apple's HTML for
+// feed links. The lookup runs through doer, so it shares the caller's SSRF gate,
+// request budget and response cap.
+func ResolveShowLink(ctx context.Context, doer Doer, link *url.URL) (feeds []Feed, matched bool, err error) {
+	if !strings.EqualFold(link.Hostname(), "podcasts.apple.com") {
+		return nil, false, nil
+	}
+	id, ok := strings.CutPrefix(path.Base(link.Path), "id")
+	if !ok || id == "" || strings.Trim(id, "0123456789") != "" {
+		return nil, true, nil
+	}
+	query := url.Values{"id": {id}}
+	if country, _, _ := strings.Cut(strings.TrimPrefix(link.Path, "/"), "/"); isCountryCode(country) {
+		query.Set("country", strings.ToLower(country))
+	}
+	data, err := doer.FetchDocument(ctx, iTunesLookupPath+query.Encode(), map[string]string{"User-Agent": userAgent})
+	if err != nil {
+		return nil, true, fmt.Errorf("itunes: lookup request failed: %w", err)
+	}
+	feeds, err = parseITunesResults(data)
+	return feeds, true, err
+}
+
+// isCountryCode reports whether segment is a two-letter storefront code.
+func isCountryCode(segment string) bool {
+	return len(segment) == 2 && strings.Trim(strings.ToLower(segment), "abcdefghijklmnopqrstuvwxyz") == ""
 }
 
 // parseITunesResults decodes an iTunes Search response into Feeds. Entries whose

@@ -3,6 +3,7 @@ package podcasts
 import (
 	"context"
 	"errors"
+	"net/url"
 	"strings"
 	"testing"
 )
@@ -175,5 +176,39 @@ func TestParseITunesResultsSkipsUnsafeFeedURLs(t *testing.T) {
 	}
 	if len(feeds) != 1 || feeds[0].FeedURL != "https://ok.example/feed.xml" {
 		t.Fatalf("feeds = %+v, want only the single safe feed-bearing hit", feeds)
+	}
+}
+
+func TestResolveShowLink(t *testing.T) {
+	doer := &routingDoer{itunesBody: []byte(`{"results":[{"collectionName":"Daily","feedUrl":"https://example.com/feed.xml"}]}`)}
+	link, _ := url.Parse("https://Podcasts.apple.com/CA/podcast/daily/id1234567?i=890")
+	feeds, matched, err := ResolveShowLink(t.Context(), doer, link)
+	if err != nil || !matched || len(feeds) != 1 || feeds[0].FeedURL != "https://example.com/feed.xml" {
+		t.Fatalf("show link = %v, %v, %v", feeds, matched, err)
+	}
+	if want := "https://itunes.apple.com/lookup?country=ca&id=1234567"; len(doer.hits) != 1 || doer.hits[0] != want {
+		t.Fatalf("lookup requests = %v, want %s", doer.hits, want)
+	}
+	for _, raw := range []string{"https://podcasts.apple.com/ca/podcast/daily/idabc", "https://podcasts.apple.com/ca/browse"} {
+		link, _ := url.Parse(raw)
+		if feeds, matched, err := ResolveShowLink(t.Context(), doer, link); err != nil || !matched || feeds != nil {
+			t.Errorf("%s = %v, %v, %v", raw, feeds, matched, err)
+		}
+	}
+	link, _ = url.Parse("https://example.com/id1234567")
+	if _, matched, _ := ResolveShowLink(t.Context(), doer, link); matched {
+		t.Error("non-Apple link matched")
+	}
+	if len(doer.hits) != 1 {
+		t.Fatalf("unmatched or ID-less links made requests: %v", doer.hits)
+	}
+	errSentinel := errors.New("budget refused")
+	failing := &routingDoer{itunesErr: errSentinel}
+	link, _ = url.Parse("https://podcasts.apple.com/podcast/id42")
+	if _, matched, err := ResolveShowLink(t.Context(), failing, link); !matched || !errors.Is(err, errSentinel) {
+		t.Fatalf("failed lookup = %v, %v", matched, err)
+	}
+	if want := "https://itunes.apple.com/lookup?id=42"; failing.hits[0] != want {
+		t.Fatalf("lookup without storefront = %v, want %s", failing.hits, want)
 	}
 }
