@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"net/url"
 	"path"
+	"slices"
 	"strings"
 )
 
@@ -63,7 +64,7 @@ func ResolveDirectoryLink(ctx context.Context, doer Doer, link *url.URL) (feeds 
 		return nil, false, nil
 	}
 	id, ok := strings.CutPrefix(path.Base(link.Path), "id")
-	if !ok || id == "" || strings.Trim(id, "0123456789") != "" {
+	if !ok || !hasPodcastSegment(link.Path) || id == "" || strings.Trim(id, "0123456789") != "" {
 		return nil, true, nil
 	}
 	query := url.Values{"id": {id}}
@@ -76,6 +77,13 @@ func ResolveDirectoryLink(ctx context.Context, doer Doer, link *url.URL) (feeds 
 	}
 	feeds, err = parseITunesResults(data)
 	return feeds, true, err
+}
+
+// hasPodcastSegment reports whether p names a show page: genre and other
+// catalogue pages also end in id<digits> (/us/genre/podcasts/id26) but are not
+// shows, and looking them up would resolve an unrelated entry.
+func hasPodcastSegment(p string) bool {
+	return slices.Contains(strings.Split(p, "/"), "podcast")
 }
 
 // isCountryCode reports whether segment is a two-letter storefront code.

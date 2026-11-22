@@ -189,7 +189,7 @@ func TestResolveDirectoryLink(t *testing.T) {
 	if want := "https://itunes.apple.com/lookup?country=ca&id=1234567"; len(doer.hits) != 1 || doer.hits[0] != want {
 		t.Fatalf("lookup requests = %v, want %s", doer.hits, want)
 	}
-	for _, raw := range []string{"https://podcasts.apple.com/ca/podcast/daily/idabc", "https://podcasts.apple.com/ca/browse"} {
+	for _, raw := range []string{"https://podcasts.apple.com/ca/podcast/daily/idabc", "https://podcasts.apple.com/ca/browse", "https://podcasts.apple.com/us/genre/podcasts/id26"} {
 		link, _ := url.Parse(raw)
 		if feeds, matched, err := ResolveDirectoryLink(t.Context(), doer, link); err != nil || !matched || feeds != nil {
 			t.Errorf("%s = %v, %v, %v", raw, feeds, matched, err)
