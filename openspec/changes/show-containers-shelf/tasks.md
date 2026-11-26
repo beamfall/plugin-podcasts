@@ -1,0 +1,3 @@
+- [x] Declare `episode` holder relation on `show`
+- [x] Replace `all-episodes` grid with `shows` shelf
+- [ ] Repin core/SDK once CORE-3524 lands

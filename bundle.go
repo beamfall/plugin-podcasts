@@ -88,6 +88,9 @@ func Bundle() sdk.Bundle {
 					// attributes (episode-guid).
 					{Name: "guested-by", ToKind: "person", Attributes: []string{"role", "episode-guid"}},
 					{Name: "about", ToKind: "topic"},
+					// Holder: core publishes one show container per subscription
+					// and holds its episodes through this single-holder relation.
+					{Name: "episode", ToKind: sdk.MediaKindName, Cardinality: "one"},
 				},
 			},
 			{
@@ -132,11 +135,11 @@ func Bundle() sdk.Bundle {
 				Source:      sdk.SourceSpec{Kind: "continue-watching"},
 			},
 			{
-				ID:          "all-episodes",
-				Kind:        "grid",
-				Title:       sdk.LocaleString{"en": "All Episodes", "fr": "Tous les épisodes"},
+				ID:          "shows",
+				Kind:        "shelf",
+				Title:       sdk.LocaleString{"en": "Shows", "fr": "Émissions"},
 				ArtworkSlot: "poster",
-				Source:      sdk.SourceSpec{Kind: "all-items"},
+				Source:      sdk.SourceSpec{Kind: "entity-items", EntityKind: "show"},
 			},
 			{
 				ID:          "archive-search",

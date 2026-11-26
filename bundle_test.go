@@ -33,7 +33,7 @@ func TestBundleImporterIDs(t *testing.T) {
 
 func TestBundleBrowseSections(t *testing.T) {
 	b := Bundle()
-	want := []string{"latest-episodes", "continue-listening", "all-episodes", "archive-search"}
+	want := []string{"latest-episodes", "continue-listening", "shows", "archive-search"}
 	sections := b.Layouts[0].Sections
 	if len(sections) != len(want) {
 		t.Fatalf("browse section count = %d, want %d", len(sections), len(want))
@@ -92,4 +92,28 @@ func TestBundleCompatibleWithPinnedSDK(t *testing.T) {
 	if !sdk.CompatibleWithSDK(b, sdk.Version) {
 		t.Fatalf("Bundle() compat range [%s, %s] excludes pinned SDK %s", b.SDKFloor, b.SDKCeiling, sdk.Version)
 	}
+}
+
+func TestBundleShowHolderRelationAndShelf(t *testing.T) {
+	b := Bundle()
+	var found bool
+	for _, k := range b.EntityKinds {
+		if k.Name != "show" {
+			continue
+		}
+		for _, r := range k.Relations {
+			if r.Name == "episode" && r.ToKind == sdk.MediaKindName && r.Cardinality == "one" {
+				found = true
+			}
+		}
+	}
+	if !found {
+		t.Fatal("show lacks the episode holder relation")
+	}
+	for _, s := range b.Layouts[0].Sections {
+		if s.ID == "shows" && s.Source.Kind == "entity-items" && s.Source.EntityKind == "show" {
+			return
+		}
+	}
+	t.Fatal("home layout lacks the shows entity-items shelf")
 }
