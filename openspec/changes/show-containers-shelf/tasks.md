@@ -1,3 +1,3 @@
 - [x] Declare `episode` holder relation on `show`
 - [x] Replace `all-episodes` grid with `shows` shelf
-- [ ] Repin core/SDK once CORE-3524 lands
+- [x] Repin core once CORE-3524 lands (core pins v0.1.17, CORE-3531)
